@@ -170,9 +170,6 @@ public class PokerTableController {
 	
 	
 	
-	
-	
-	
 	@FXML
 	private void handlePlay() {
 		
@@ -215,80 +212,64 @@ public class PokerTableController {
 
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	@FXML
 	private void handleDraw() {
 		iCardDrawn++;
 
+		//  Disable the button in case of double-click
+		btnDraw.setDisable(true);
+		
 		// Draw a card for each player seated
 		for (Player p : mainApp.GetSeatedPlayers()) {
 			Card c = gme.getGameDeck().drawFromDeck();
-			
-			
-			
 
 			if (p.getiPlayerPosition() == 1) {
 				GamePlayPlayerHand GPPH = gme.FindPlayerGame(gme, p);
 				GPPH.addCardToHand(c);
+
+				//	This is the card that is going to be dealt to the player.
 				String strCard = "/res/img/" + c.getCardImg();
-
-				ImageView img = new ImageView(new Image(getClass().getResourceAsStream(strCard), 96, 71, true, true));
-
-				ImageView i = (ImageView) hBoxP1Cards.getChildren().get(iCardDrawn - 1);
-
-				Bounds bndCardDealt = i.localToScene(i.getBoundsInLocal());
-
-				ImageView iCardFaceDown = (ImageView) HboxCommonArea.getChildren().get(0);
-
-				Bounds bndCardDeck = iCardFaceDown.localToScene(iCardFaceDown.getBoundsInLocal());
-
+				ImageView imgvCardDealt = new ImageView(new Image(getClass().getResourceAsStream(strCard), 96, 71, true, true));
+				
+				// imgvCardFaceDown - There's already a place holder card sitting in the player's hbox.  It's face down.  Find it
+				// and then determine it's bounds and top left hand handle. 				
+				ImageView imgvCardFaceDown = (ImageView) hBoxP1Cards.getChildren().get(iCardDrawn - 1);			
+				Bounds bndCardDealt = imgvCardFaceDown.localToScene(imgvCardFaceDown.getBoundsInLocal());
 				Point2D pntCardDealt = new Point2D(bndCardDealt.getMinX(), bndCardDealt.getMinY());
+				
+				//	imgvDealerDeck = the card in the common area, where dealer's card is located.  Find the boundary top left point.
+				ImageView imgvDealerDeck = (ImageView) HboxCommonArea.getChildren().get(0);
+				Bounds bndCardDeck = imgvDealerDeck.localToScene(imgvDealerDeck.getBoundsInLocal());
 				Point2D pntCardDeck = new Point2D(bndCardDeck.getMinX(), bndCardDeck.getMinY());
 
-				SequentialTransition transMoveRotCard = createTransition(pntCardDeck, pntCardDealt, i, iCardFaceDown,
-						new Image(getClass().getResourceAsStream(strCard), 75, 75, true, true));
+				//	Add a sequential transition to the card (move, rotate)
+				SequentialTransition transMoveRotCard = createTransition(pntCardDeck, pntCardDealt);
 
 	
-				final ParallelTransition transFadeCardInOut = createFadeTransition(i, new Image(getClass().getResourceAsStream(strCard), 75, 75, true, true));
+				//	Add a parallel transition to the card (fade in/fade out).
+				final ParallelTransition transFadeCardInOut = createFadeTransition(imgvCardFaceDown, new Image(getClass().getResourceAsStream(strCard), 75, 75, true, true));
 
 				
 				transMoveRotCard.onFinishedProperty().set(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent actionEvent) {
 
+						//	get rid of the created card, run the fade in/fade out transition
+						//	This isn't going to fire until the transMoveRotCard is complete.
 						APMainScreen.getChildren().remove(imgTransCard);
 						transFadeCardInOut.play();
+						
+						//	Enable the draw button after the animation is done.
+						btnDraw.setDisable(false);
 				}
 				});
 
 				transMoveRotCard.play();
 
-	
-	
-				// h1P1.getChildren().add(img);
 
+				//	This is hard coded for five card stud... what to do AFTER the fifth card is dealt...  this should probably change to
+				//  a switch statement (switching on game played, card #, etc).
 				if (iCardDrawn == 5) {
 					GPPH.getHand().EvalHand();
 					System.out.println(GPPH.getHand().getHandStrength());
@@ -300,30 +281,36 @@ public class PokerTableController {
 
 			btnDraw.setVisible(false);
 		}
+		
+		
 
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 
-	private SequentialTransition createTransition(final Point2D pntStartPoint, final Point2D pntEndPoint,
-			final ImageView iv, final ImageView ivStart, final Image img) {
+	private SequentialTransition createTransition(final Point2D pntStartPoint, final Point2D pntEndPoint) {
 
-		FadeTransition fadeOutTransition = new FadeTransition(Duration.seconds(.25), iv);
-		fadeOutTransition.setFromValue(1.0);
-		fadeOutTransition.setToValue(0.0);
-		fadeOutTransition.setOnFinished(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent arg0) {
-				iv.setImage(img);
-				;
-			}
-
-		});
-
-		FadeTransition fadeInTransition = new FadeTransition(Duration.seconds(.25), iv);
-		fadeInTransition.setFromValue(0.0);
-		fadeInTransition.setToValue(1.0);
 
 		imgTransCard = new ImageView(
 				new Image(getClass().getResourceAsStream("/res/img/b2fh.png"), 75, 75, true, true));
@@ -356,8 +343,7 @@ public class PokerTableController {
 
 		
 		SequentialTransition seqTrans = new SequentialTransition();
-		seqTrans.getChildren().addAll(parallelTransition);
-		
+		seqTrans.getChildren().addAll(parallelTransition);		
 
 		return seqTrans;
 	}
@@ -389,7 +375,14 @@ public class PokerTableController {
 		return parallelTransition;
 	}	
 	
-	public static int randInt(int min, int max) {
+	
+	/**
+	 * randInt - Create a random number
+	 * @param min
+	 * @param max
+	 * @return
+	 */
+	private static int randInt(int min, int max) {
 
 		return (int) (Math.random() * ( min - max )) * -1;
 
