@@ -78,6 +78,7 @@ public class CardDomainModel {
 	/**
 	 * CardRank Comparator is used for sorting the collection by rank
 	 */
+	
 	public static Comparator<CardDomainModel> CardRank = new Comparator<CardDomainModel>() {
 
 		public int compare(CardDomainModel c1, CardDomainModel c2) {

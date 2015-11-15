@@ -271,7 +271,9 @@ public class PokerTableController {
 				//	This is hard coded for five card stud... what to do AFTER the fifth card is dealt...  this should probably change to
 				//  a switch statement (switching on game played, card #, etc).
 				if (iCardDrawn == 5) {
-					GPPH.getHand().EvalHand();
+					Hand h = GPPH.getHand();
+					h = Hand.EvalHand(h);
+					GPPH.setHand(h);
 					System.out.println(GPPH.getHand().getHandStrength());
 				}
 			}
