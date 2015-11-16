@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import enums.eGame;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -13,8 +14,11 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.RadioMenuItem;
 import javafx.stage.FileChooser;
 import poker.app.MainApp;
+import pokerBase.Rule;
 
 /**
  * The controller for the root layout. The root layout provides the basic
@@ -27,8 +31,30 @@ public class RootLayoutController implements Initializable {
 
     // Reference to the main application
     private MainApp mainApp;
+    private static int iCardDrawn = 0;
+    private static Rule rle = null;
+    
+    
+    
+    public static int getiCardDrawn() {
+		return iCardDrawn;
+	}
 
-    @FXML
+
+	public void setiCardDrawn(int iCardDrawn) {
+		this.iCardDrawn = iCardDrawn;
+	}
+
+
+	public static Rule getRle() {
+		return rle;
+	}
+
+
+	public void setRle(Rule rle) {
+		this.rle = rle;
+	}
+	@FXML
     private Menu mnuGame;
     
     
@@ -76,6 +102,36 @@ public class RootLayoutController implements Initializable {
     /**
      * Creates an empty address book.
      */
+    private void GameRule (eGame myGame, int CardDrawn){
+		setiCardDrawn(CardDrawn);
+		Rule rule = new Rule(myGame);
+		setRle(rule);
+	}
+    
+    @FXML
+	public RadioMenuItem FiveStud;
+	
+    @FXML	
+	public RadioMenuItem Omaha;
+	
+    @FXML
+	public RadioMenuItem Hold_Em;
+	
+	@FXML
+	private void handleFiveStud(){
+		GameRule(eGame.FiveStud, 5);
+	}
+	
+	@FXML
+	private void handleOmaha(){
+		GameRule(eGame.Omaha, 3);
+	}
+	
+	@FXML
+	private void handleHold_Em(){
+		GameRule(eGame.TexasHoldEm, 2);
+	}
+	
     @FXML
     private void handleNew() {
     }

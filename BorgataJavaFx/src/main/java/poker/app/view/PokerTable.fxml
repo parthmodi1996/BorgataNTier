@@ -61,7 +61,7 @@
                            </rowConstraints>
                            <children>
                               <TextField fx:id="txtP3Name" prefHeight="11.0" prefWidth="94.0" style="-fx-background-color: lightgreen;" GridPane.rowIndex="1" />
-                              <HBox fx:id="hBoxP2Cards" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <HBox fx:id="hBoxP3Cards" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <ToggleButton fx:id="btnP3SitLeave" mnemonicParsing="false" onAction="#handleP3SitLeave" styleClass="togglebutton" text="Sit" />
                               <Label fx:id="lblP3Name" GridPane.rowIndex="1" />
                            </children>
@@ -132,7 +132,7 @@
                           <items>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: green;">
                                  <children>
-                                    <HBox layoutX="14.0" layoutY="10.0" prefHeight="68.0" prefWidth="317.0" style="-fx-background-color: green;" />
+                                    <HBox fx:id="HboxCommunityArea" layoutX="14.0" layoutY="10.0" prefHeight="68.0" prefWidth="317.0" style="-fx-background-color: green;" />
                                  </children></AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: green;">
                                  <children>
